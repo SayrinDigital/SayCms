@@ -8,7 +8,7 @@
 				<span class="uk-text-small uk-text-muted">© 2019 Sayrin - <a href="https://sayrin.cl" class="theme-c">Desarrollado por Sayrin</a></span>
 			</div>
 			<div class="uk-width-medium uk-padding-small">
-				<form action="login.html">
+				<div>
 					<fieldset class="uk-fieldset">
 
 						<legend class="uk-legend">Iniciar Sesión</legend>
@@ -30,10 +30,10 @@
 							<label><input class="uk-checkbox" type="checkbox"> Seguir conectado</label>
 						</div>
 						<div class="uk-margin">
-							<button type="submit" class="theme-a uk-button uk-button-primary uk-button-primary uk-button-large uk-width-1-1">Iniciar Sesión</button>
+							<button type="submit" @click="postLogin" class="theme-a uk-button uk-button-primary uk-button-primary uk-button-large uk-width-1-1">Iniciar Sesión</button>
 						</div>
 					</fieldset>
-				</form>
+				</div>
 				<div>
 					<div class="uk-text-center">
 						<a class="uk-link-reset uk-text-small" data-uk-toggle="target: #recover;animation: uk-animation-slide-top-small">¿Olvidaste tu contraseña?</a>
@@ -77,14 +77,32 @@ export default {
   middleware: 'notAuthenticated',
   methods: {
     postLogin : function() {
-      setTimeout(() => { // we simulate the async request with timeout.
-        const auth = {
-          accessToken: 'someStringGotFromApiServiceWithAjax'
-        }
-        this.$store.commit('setAuth', auth) // mutating to store for client rendering
-        Cookie.set('auth', auth) // saving token in cookie for server rendering
-        this.$router.push('/')
-      }, 1000)
+
+      axios
+        .post('http://localhost:1337/auth/local', {
+          identifier: 'josepuma@sayrin.cl',
+          password: 'cris26011998'
+        })
+        .then(response => {
+          // Handle success.
+          console.log('Well done!');
+          /*console.log('User profile', response.data.user);
+          console.log('User token', response.data.jwt);*/
+          const auth = {
+            accessToken: response.data.jwt
+          }
+
+          this.$store.commit('setAuth', auth) // mutating to store for client rendering
+          Cookie.set('auth', auth) // saving token in cookie for server rendering
+          this.$router.push('/')
+
+        })
+        .catch(error => {
+          // Handle error.
+          console.log('An error occurred:', error);
+        });
+
+
     }
   }
 }
