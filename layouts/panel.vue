@@ -38,10 +38,10 @@
                     <li><a href="#">Servicios Incluidos</a></li>
                     <li><a href="#">Servicios Adicionales</a></li>
                     <li>
-                    <a href="#">Categorías</a>
+                    <nuxt-link to="/escorts/categorias">Categorías</nuxt-link>
                     <ul>
                         <li v-for="category in categories">
-                          <nuxt-link :to="{name: 'escorts-categorias-id', params: { id: category.id } }">{{ category.name }}</nuxt-link>
+                          <nuxt-link :to="{name: 'escorts-categorias-categoria-id', params: { id: category.id } }">{{ category.name }}</nuxt-link>
                         </li>
                     </ul>
                 </li>
