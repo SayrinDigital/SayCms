@@ -34,7 +34,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-      { src: '~/plugins/uikit.js', ssr: false }
+      { src: '~/plugins/uikit.js', ssr: false }, { src: '~/plugins/vue2-filters.js', ssr: false }
     ],
 
   /*
@@ -42,15 +42,39 @@ module.exports = {
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
   /*
   ** Axios module configuration
   */
   axios: {
+    baseURL: 'https://api.privadosvip.cl'
     // See https://github.com/nuxt-community/axios-module#options
   },
 
+  auth: {
+    // Options
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/auth/local', method: 'post', propertyName: 'jwt' },
+          register: { url: '/auth/local/register', method: 'post'},
+          user: { url: '/users/me', method: 'get', propertyName: null},
+          logout: null
+        },
+        // tokenRequired: true,
+        // tokenType: 'bearer',
+      }
+    },
+    redirect: {
+      logout: '/login'
+    }
+  },
+
+  router: {
+  middleware: ['auth']
+},
   /*
   ** Build configuration
   */
