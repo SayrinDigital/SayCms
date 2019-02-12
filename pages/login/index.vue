@@ -66,9 +66,7 @@
 <script>
 import axios from 'axios'
 
-import {
-  mapMutations
-} from 'vuex'
+
 
 export default {
   transition: 'slide-left',
@@ -88,7 +86,6 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      try {
         // this.$toast.show('Logging in...', { duration: 500})
         await this.$auth.loginWith('local', {
           data: {
@@ -96,13 +93,18 @@ export default {
             password: this.password
           }
         })
-        this.$router.push({
-          path: '/login'
+        .then(response => {
+          this.$axios.setToken(this.$auth.getToken(this.$auth.strategy.name))
+           console.log(this.$auth.getToken(this.$auth.strategy.name))
+                  this.$router.push({
+                    path: '/login'
+                  })
         })
-      } catch (err) {
-        this.loading = false
-        alert(err.message || 'Hubo un error')
-      }
+
+        .catch(error => {
+
+          console.log('An error occurred:', error);
+        });
     },
   }
 }

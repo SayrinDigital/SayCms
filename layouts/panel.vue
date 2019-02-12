@@ -12,8 +12,8 @@
               </div>
 
               <div class="uk-width-2-3">
-                <h4 class="uk-margin-remove">Hola {{ username }}</h4>
-                <p class="uk-margin-remove">Administrador</p>
+                <h4 class="uk-margin-remove">Hola {{ $auth.user.username}}!</h4>
+                <p class="uk-margin-remove">Token: </p>
               </div>
             </div>
             <hr class="uk-hr">
@@ -32,11 +32,11 @@
                 <li class="uk-parent">
                   <a href="#">Escorts</a>
                   <ul class="uk-nav-sub">
-                    <li><a href="#">Listado</a></li>
-                    <li><a href="#">Características</a></li>
-                    <li><a href="#">Peso</a></li>
-                    <li><a href="#">Servicios Incluidos</a></li>
-                    <li><a href="#">Servicios Adicionales</a></li>
+                    <li><nuxt-link to="/escorts/listado">Listado</nuxt-link></li>
+                    <li><nuxt-link to="/escorts/caracteristicas">Características</nuxt-link></li>
+                    <li><nuxt-link to="/escorts/peso">Peso</nuxt-link></li>
+                    <!--<li><a href="#">Servicios Incluidos</a></li>
+                    <li><a href="#">Servicios Adicionales</a></li>-->
                     <li>
                     <nuxt-link to="/escorts/categorias">Categorías</nuxt-link>
                     <ul>
@@ -142,19 +142,31 @@ export default {
   data(){
     return{
          categories : [],
-         baseUrl: ""
+         baseUrl: "",
+         token: ""
     }
   },
   beforeMount(){
      this.baseUrl =  this.$axios.defaults.baseURL
+     this.token = this.$auth.getToken(this.$auth.strategy.name)
   },
   mounted(){
     this.getCategories()
+    this.token = this.$auth.token
   },
   computed: {
-    username() {
-      return this.$store.getters['auth/username']
+    role() {
+      //return this.$store.getters['auth/username']
     }
+  },
+  filters:{
+     translateRole: function(value){
+       switch (value) {
+         case 'Administrator':
+           return 'Administrador'
+           break;
+       }
+     }
   },
   methods: {
     getCategories(){
@@ -162,8 +174,12 @@ export default {
             .get(this.baseUrl + '/categories', {
               params: {
                 _sort: 'name:desc' // Generates http://localhost:1337/posts?_sort=createdAt:desc
+              },
+              headers: {
+                Authorization: this.token
               }
-            })
+            }
+              )
             .then(response => {
               // Handle success.
               //console.log('Well done, here is the list of posts: ', response.data);

@@ -49,7 +49,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL: 'https://api.privadosvip.cl'
+    baseURL: 'http://localhost:1337'
     // See https://github.com/nuxt-community/axios-module#options
   },
 
@@ -63,8 +63,8 @@ module.exports = {
           user: { url: '/users/me', method: 'get', propertyName: null},
           logout: null
         },
-        // tokenRequired: true,
-        // tokenType: 'bearer',
+         tokenRequired: true,
+         tokenType: 'bearer',
       }
     },
     redirect: {

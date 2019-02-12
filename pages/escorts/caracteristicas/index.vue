@@ -5,15 +5,15 @@
       <div class="uk-navbar-left">
         <div class="uk-navbar-item uk-padding-remove">
           <div>
-            <h3 class="uk-margin-remove">Categorías</h3>
-            <p>Administre las categorías principales de las escorts.</p>
-            <p v-if="categories">Tiene un total de {{ categories.length }} categorías.</p>
+            <h3 class="uk-margin-remove">Características</h3>
+            <p>Administre las características principales de las escorts. Importante para filtrarlas.</p>
+            <p v-if="characteristics">Tiene un total de {{ characteristics.length }} características.</p>
           </div>
         </div>
       </div>
       <div class="uk-navbar-right">
         <div class="uk-navbar-item">
-          <button class="uk-button theme-a" type="button" uk-toggle="target: #add-category-modal"><span uk-icon="icon: pencil" class="uk-margin-small-right"></span> Agregar Categoría</button>
+          <button class="uk-button theme-a" type="button" uk-toggle="target: #add-characteristic-modal"><span uk-icon="icon: pencil" class="uk-margin-small-right"></span> Agregar Característica</button>
         </div>
       </div>
     </nav>
@@ -27,17 +27,16 @@
         <div class="uk-section uk-section small">
 
           <transition-group name="fade" tag="div" class="uk-grid-match uk-child-width-1-1 uk-child-width-1-2@s uk-child-width-1-3@m" uk-grid uk-scrollspy="cls: uk-animation-slide-bottom-medium; target: > div > div; delay: 200; repeat: true">
-            <div v-for="category in categories" :key="category.id">
+            <div v-for="characteristic in characteristics" :key="characteristic.id">
               <div class="glossary-card  uk-box-shadow-hover-large uk-inline-clip uk-transition-toggle" tabindex="0">
                 <div>
-                  <h4>{{ category.name }}</h4>
-                  <p v-if="category.escorts">{{ category.escorts.length }} escorts</p>
+                  <h4>{{ characteristic.name }}</h4>
                 </div>
                 <div class="say uk-transition-slide-bottom uk-position-bottom uk-overlay">
                   <div class="uk-align-right">
                     <ul class="uk-iconnav">
-                      <li><a @click="editCategory(category)" href="#" uk-icon="icon: file-edit"></a></li>
-                      <li v-if="category.name != 'Premium'"><a @click="deleteCategory(category.id, category)" href="#" uk-icon="icon: trash"></a></li>
+                      <li><a @click="editCharacteristic(characteristic)" href="#" uk-icon="icon: file-edit"></a></li>
+                      <li v-if="characteristic.name != 'Premium'"><a @click="deleteCharacteristic(characteristic.id, characteristic)" href="#" uk-icon="icon: trash"></a></li>
                     </ul>
                   </div>
                 </div>
@@ -52,44 +51,18 @@
   </div>
 
 
-  <!-- Category -->
+  <!-- characteristic -->
 
-  <div ref="addcategorymodal" id="add-category-modal"  uk-modal>
+  <div ref="addcharacteristicmodal" id="add-characteristic-modal" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
-      <h2 class="uk-modal-title">Agregar Categoría</h2>
-      <p>Agrega una nueva categoría.</p>
+      <h2 class="uk-modal-title">Agregar Características</h2>
+      <p>Agrega una nueva característica.</p>
 
-      <form class="uk-form-stacked uk-margin" @submit.stop.prevent="addCategory()">
+      <form class="uk-form-stacked uk-margin" @submit.stop.prevent="addCharacteristic()">
         <div>
           <label class="uk-form-label"></label>
           <div class="uk-form-controls">
-            <input class="uk-input uk-form-large" v-model="categoryname" type="text" placeholder="Nombre">
-          </div>
-        </div>
-        <div v-if="isuploading" class="uk-margin">
-          <div uk-spinner></div>
-        </div>
-        <div class="uk-margin">
-
-                <p class="uk-text-right">
-                  <button class="uk-button theme-simple uk-button-default uk-modal-close" type="button">Cancelar</button>
-                  <button class="uk-button uk-button theme-a"  type="submit">Guardar</button>
-                </p>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div ref="editcategorymodal" id="edit-category-modal" @submit.stop.prevent="saveEditedCategory()" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body">
-      <h2 class="uk-modal-title">Agregar Categoría</h2>
-      <p>Edita una categoría.</p>
-
-      <form class="uk-form-stacked uk-margin">
-        <div>
-          <label class="uk-form-label"></label>
-          <div class="uk-form-controls">
-            <input class="uk-input uk-form-large" v-model="editedcategoryname" type="text" placeholder="Nombre">
+            <input class="uk-input uk-form-large" v-model="characteristicname" type="text" placeholder="Nombre">
           </div>
         </div>
         <div v-if="isuploading" class="uk-margin">
@@ -98,7 +71,33 @@
         <div class="uk-margin">
           <p class="uk-text-right">
             <button class="uk-button theme-simple uk-button-default uk-modal-close" type="button">Cancelar</button>
-            <button class="uk-button uk-button theme-a" type="submit">Guardar</button>
+            <button class="uk-button uk-button theme-a"  type="submit">Guardar</button>
+          </p>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <div ref="editcharacteristicmodal" id="edit-characteristic-modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title">Agregar Característica</h2>
+      <p>Edita una característica</p>
+
+      <form class="uk-form-stacked uk-margin" @submit.stop.prevent="saveEditedCharacteristic()">
+        <div>
+          <label class="uk-form-label"></label>
+          <div class="uk-form-controls">
+            <input class="uk-input uk-form-large" v-model="editedcharacteristicname" type="text" placeholder="Nombre">
+          </div>
+        </div>
+        <div v-if="isuploading" class="uk-margin">
+          <div uk-spinner></div>
+        </div>
+        <div class="uk-margin">
+          <p class="uk-text-right">
+            <button class="uk-button theme-simple uk-button-default uk-modal-close" type="button">Cancelar</button>
+            <button class="uk-button uk-button theme-a"  type="submit">Guardar</button>
           </p>
         </div>
       </form>
@@ -126,43 +125,42 @@ export default {
   layout: 'panel',
   data() {
     return {
-      categories: [],
+      characteristics: [],
       baseUrl: "",
       isuploading: false,
-      categoryname: "",
-      editedcategoryname: "",
+      characteristicname: "",
+      editedcharacteristicname: "",
       currentId: null,
-      token: null
+      token: ""
     }
   },
   beforeMount() {
     this.baseUrl = this.$axios.defaults.baseURL
-      this.token = this.$auth.getToken(this.$auth.strategy.name)
+    this.token =   this.$auth.getToken(this.$auth.strategy.name)
   },
   mounted() {
-    this.loadCategories()
+    this.loadCharacteristics()
   },
   methods: {
-    editCategory: function(category){
-            this.editedcategoryname = category.name
-            this.currentId = category.id
-            UIkit.modal(this.$refs.editcategorymodal).show()
+    editCharacteristic: function(characteristic){
+            this.editedcharacteristicname = characteristic.name
+            this.currentId = characteristic.id
+            UIkit.modal(this.$refs.editcharacteristicmodal).show()
     },
-    saveEditedCategory: function(){
+    saveEditedCharacteristic: function(){
 
       this.isuploading = true
             axios
-              .put(this.baseUrl + '/categories/' + this.currentId,{
-                name: this.editedcategoryname,
+              .put(this.baseUrl + '/characteristics/' + this.currentId,{
+                name: this.editedcharacteristicname,
               })
               .then(response => {
                 // Handle success.
                 //console.log('Well done, here is the list of posts: ', response.data);
                 var newTerm = response.data
-
                 this.name = ""
                 this.isuploading = false
-                           UIkit.modal(this.$refs.editcategorymodal).hide()
+                           UIkit.modal(this.$refs.editcharacteristicmodal).hide()
                            this.$router.go()
                            //window.location.reload(true)
               })
@@ -171,40 +169,44 @@ export default {
                 console.log('An error occurred:', error);
               });
     },
-    deleteCategory(id, category){
+    deleteCharacteristic(id, characteristic){
       axios
-        .delete(this.baseUrl + '/categories/' + id)
+        .delete(this.baseUrl + '/characteristics/' + id)
         .then(response => {
 
-          this.glossary.splice(this.glossary.indexOf(category), 1);
+          if(this.characteristics.length>1){
+          this.characteristics.splice(this.glossary.indexOf(characteristic), 1);
+        }else{
+          this.characteristics= []
+        }
 
-          this.categoryname = ""
+          this.characteristicname = ""
         })
         .catch(error => {
           // Handle error.
           console.log('An error occurred:', error);
         });
     },
-    addCategory() {
+    addCharacteristic() {
 
       this.isuploading = true
 
       axios
-        .post(this.baseUrl + '/categories', {
-            name: this.categoryname
+        .post(this.baseUrl + '/characteristics', {
+            name: this.characteristicname
         })
         .then(response => {
           // Handle success.
           //console.log('Well done, here is the list of posts: ', response.data);
-          if (this.categories.length > 0) {
-            this.categories.unshift(response.data)
+          if (this.characteristics.length > 0) {
+            this.characteristics.unshift(response.data)
           } else {
-            this.categories.push(response.data)
+            this.characteristics.push(response.data)
           }
 
           this.isuploading = false
-          this.categoryname = ""
-          UIkit.modal(this.$refs.addcategorymodal).hide()
+          UIkit.modal(this.$refs.addcharacteristicmodal).hide()
+          this.characteristicname = ""
         })
         .catch(error => {
           // Handle error.
@@ -212,9 +214,9 @@ export default {
           this.isuploading = false
         });
     },
-    loadCategories() {
+    loadCharacteristics() {
       axios
-        .get(this.baseUrl + '/categories', {
+        .get(this.baseUrl + '/characteristics', {
           headers: {
             Authorization: this.token
           }
@@ -222,7 +224,7 @@ export default {
         .then(response => {
           // Handle success.
           //console.log('Well done, here is the list of posts: ', response.data);
-          this.categories = response.data
+          this.characteristics = response.data
         })
         .catch(error => {
           // Handle error.

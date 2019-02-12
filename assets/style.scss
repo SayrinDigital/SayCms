@@ -96,6 +96,7 @@ p{
   font-size: 14px;
   line-height: 30px;
   margin: 0;
+  word-wrap: break-word
 }
 
 a{
@@ -371,6 +372,8 @@ span.theme-a{
 .card-container{
   padding: 50%;
 }
+
+
 
 @media only screen and (max-width: 1200px) {
   .left-panel {
