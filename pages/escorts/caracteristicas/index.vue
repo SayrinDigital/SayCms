@@ -175,7 +175,7 @@ export default {
         .then(response => {
 
           if(this.characteristics.length>1){
-          this.characteristics.splice(this.glossary.indexOf(characteristic), 1);
+          this.characteristics.splice(this.characteristics.indexOf(characteristic), 1);
         }else{
           this.characteristics= []
         }

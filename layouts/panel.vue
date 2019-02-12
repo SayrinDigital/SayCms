@@ -13,7 +13,6 @@
 
               <div class="uk-width-2-3">
                 <h4 class="uk-margin-remove">Hola {{ $auth.user.username}}!</h4>
-                <p class="uk-margin-remove">Token: </p>
               </div>
             </div>
             <hr class="uk-hr">

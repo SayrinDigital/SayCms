@@ -46,7 +46,7 @@
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-text">Acerca</label>
                   <div class="uk-form-controls">
-                    <textarea class="uk-textarea light" v-model="girl.about" rows="4" id="form-stacked-text" type="text" placeholder="Some text..."></textarea>
+                    <textarea class="uk-textarea light" v-model="girl.about" rows="4"   type="text" placeholder="Some text..."></textarea>
                   </div>
                 </div>
               </div>
@@ -86,7 +86,7 @@
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-select">Cumpleaños</label>
                   <div class="uk-form-controls">
-                   <input class="uk-input light" v-model="birthdateConverted" id="form-stacked-text" type="datetime" placeholder="">
+                   <input class="uk-input light" v-model="birthdateConverted"   type="datetime" placeholder="">
                   </div>
                 </div>
               </div>
@@ -108,7 +108,7 @@
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-text">Teléfono</label>
                   <div class="uk-form-controls">
-                    <input class="uk-input light" v-model="girl.phone" id="form-stacked-text" type="text" placeholder="+569">
+                    <input class="uk-input light" v-model="girl.phone"   type="text" placeholder="+569">
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-text">Horario</label>
                   <div class="uk-form-controls">
-                    <input class="uk-input light"  v-model="girl.datework" id="form-stacked-text" type="text" placeholder="10:00 a 15hrs">
+                    <input class="uk-input light"  v-model="girl.datework"   type="text" placeholder="10:00 a 15hrs">
                   </div>
                 </div>
               </div>
@@ -186,7 +186,7 @@
             </div>
             <div class="uk-width-1-1">
               <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-select">Categoría por Peso</label>
+                <label class="uk-form-label" for="form-stacked-select">Características</label>
                 <div class="uk-form-controls">
 
                   <select multiple="true" v-model="selectedCharacteristics" class="uk-select light" id="form-stacked-select">
@@ -222,7 +222,7 @@
                   <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-select">Inicio Publicación</label>
                     <div class="uk-form-controls">
-                     <input class="uk-input light" v-model="girl.startpublishing" id="form-stacked-text" type="datetime" placeholder="">
+                     <input class="uk-input light" v-model="girl.startpublishing"   type="datetime" placeholder="">
                     </div>
                   </div>
                 </div>
@@ -230,7 +230,7 @@
                   <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-select">Fin Publicación</label>
                     <div class="uk-form-controls">
-                     <input class="uk-input light" v-model="girl.endpublishing" id="form-stacked-text" type="datetime" placeholder="">
+                     <input class="uk-input light" v-model="girl.endpublishing"   type="datetime" placeholder="">
                     </div>
                   </div>
                 </div>
@@ -250,8 +250,15 @@
 <script>
 import axios from 'axios'
 import moment from 'moment'
+let UIkit;
+
+if (process.browser) {
+  UIkit = require('uikit');
+}
 
 export default {
+
+
   layout: 'panel',
   data() {
     return {
@@ -361,11 +368,17 @@ export default {
         .then(response => {
           // Handle success.
           //console.log('Well done, here is the list of posts: ', response.data);
-            console.log(updatedGirl)
+            //console.log(updatedGirl)
+            UIkit.modal.alert('¡Se actualizó la información!').then(function () {
+
+            });
         })
         .catch(error => {
           // Handle error.
           console.log('An error occurred:', error);
+          UIkit.modal.alert('¡Oh oh! Algo salió mal').then(function () {
+
+          });
         });
     }
   }

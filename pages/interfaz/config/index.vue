@@ -28,7 +28,7 @@
           <div>
 
             <div class="uk-background-default uk-card-body uk-box-shadow-hover-large uk-border-rounded">
-              <form class="uk-form-stacked uk-margin">
+              <form class="uk-form-stacked uk-margin" @submit.stop.prevent="editContainer()">
                 <div class="uk-margin">
                   <h4>Contenedor</h4>
                   <p>Contenedor que se muestra antes del pie de página.</p>
@@ -48,7 +48,7 @@
                 <div class="uk-margin">
                   <div class="uk-form-label">Título del Link</div>
                   <div class="uk-form-controls">
-                    <textarea class="uk-textarea uk-form-large light" v-model="linktext" placeholder="..."></textarea>
+                    <input class="uk-input uk-form-large light" v-model="linktext" placeholder="..."/>
                   </div>
                 </div>
                 <div class="uk-margin">
@@ -64,22 +64,24 @@
                   </div>
                 </div>
 
+                <div class="uk-margin" v-if="iscontainsersaved">
+                  <p class="uk-text-success uk-text-center">Se guardaron los cambios</p>
+                </div>
+
+                <div class="uk-margin">
+                  <p class="uk-text-right">
+                      <button class="uk-button uk-button theme-a" type="submit" >Guardar</button>
+                  </p>
+                </div>
+
               </form>
-
-              <div v-if="iscontainsersaved">
-                <p class="uk-text-success uk-text-center">Se guardaron los cambios</p>
-              </div>
-
-              <p class="uk-text-right">
-                  <button class="uk-button uk-button theme-a" type="submit" @click="editContainer">Guardar</button>
-              </p>
 
             </div>
 
           </div>
           <div>
             <div class="uk-background-default uk-card-body uk-box-shadow-hover-large uk-border-rounded">
-              <form class="uk-form-stacked uk-margin">
+              <form class="uk-form-stacked uk-margin" @submit.stop.prevent="saveFooterContainer()">
                 <div class="uk-margin">
                   <h4>Pie de Página</h4>
                   <p>Información mostrada en el pie de página</p>
@@ -90,14 +92,16 @@
                     <textarea rows="4" class="uk-textarea uk-form-large light" v-model="footercontent" type="text" placeholder="..."></textarea>
                   </div>
                 </div>
-              </form>
-              <div v-if="isfootersaved">
-                <p class="uk-text-success uk-text-center">Se guardaron los cambios</p>
-              </div>
+                <div class="uk-margin" v-if="isfootersaved">
+                  <p class="uk-text-success uk-text-center">Se guardaron los cambios</p>
+                </div>
 
-              <p class="uk-text-right">
-                  <button class="uk-button uk-button theme-a" type="submit" @click="saveFooterContainer">Guardar</button>
-              </p>
+                <div class="uk-margin">
+                  <p class="uk-text-right">
+                      <button class="uk-button uk-button theme-a" type="submit" >Guardar</button>
+                  </p>
+                </div>
+              </form>
 
             </div>
 
@@ -169,7 +173,7 @@ export default {
   methods: {
     getJoiunsContainer: function(){
       axios
-        .get(this.baseUrl + '/footers', {
+        .get(this.baseUrl + '/joinuses', {
           params: {
             _sort: 'id:asc',
             _limit: 1 // Generates http://localhost:1337/posts?_sort=createdAt:desc
@@ -179,6 +183,7 @@ export default {
           // Handle success.
           //console.log('Well done, here is the list of posts: ', response.data);
           var container = response.data[0]
+          console.log(container)
           this.title = container.title
           this.subtitle = container.subtitle
           this.linkto = container.linkto

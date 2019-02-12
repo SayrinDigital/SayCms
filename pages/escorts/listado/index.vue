@@ -24,16 +24,25 @@
 
       <div class="uk-section uk-section small">
 
-        <div class="uk-child-width-1-5@l uk-child-width-1-3@m uk-child-width-1-1 uk-grid-match uk-grid-small" uk-grid>
+        <div class="uk-child-width-1-5@l uk-child-width-1-3@m uk-child-width-1-1 uk-grid-match uk-grid-small" uk-grid uk-scrollspy="cls: uk-animation-slide-bottom-medium; target: > div > div; delay: 200; repeat: true">
           <div v-for="girl in girls" :key="girl.id">
-            <nuxt-link v-if="girl.escort" :to="{name: 'escorts-listado-profile-id', params: { id: girl.escort.id } }" class="uk-card-body uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded">
+            <div v-if="girl.escort"  class="uk-inline-clip uk-transition-toggle uk-card-body uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded">
 
               <div>
                 <h3>{{ girl.fullname }}</h3>
                 <p> {{ girl.email }} </p>
               </div>
 
-            </nuxt-link>
+              <div class="say uk-transition-slide-bottom uk-position-bottom uk-overlay">
+                <div class="uk-align-right">
+                  <ul class="uk-iconnav">
+                    <li><nuxt-link :to="{name: 'escorts-listado-profile-id', params: { id: girl.escort.id } }" href="#" uk-icon="icon: file-edit"></nuxt-link></li>
+                    <li><a @click="deleteUser(girl, girl.escort.id)" uk-icon="icon: trash"></a></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
 
@@ -139,8 +148,61 @@ export default {
     this.loadEscorts()
     this.loadUsers()
     //this.loadRoles()
+
   },
   methods: {
+    deleteUser(user, escortId){
+
+      var vim = this
+
+         UIkit.modal.confirm('¿Realmente deseas eliminar a este usuario?', { labels: { ok: 'Eliminar', cancel: 'Cancelar' } }).then(function () {
+
+           axios
+             .delete(vim.baseUrl + '/users/' + user.id, {
+               headers: {
+                 Authorization: vim.token
+               }
+             })
+             .then(response => {
+                 //Sends escort and user information to create the relation
+                vim.deleteEscort(user,escortId)
+
+             })
+             .catch(error => {
+               // Handle error.
+               console.log('An error occurred:', error);
+               this.isuploading = false
+             });
+
+
+         }, function () {
+             //console.log('Rejected.')
+         });
+
+    },
+    deleteEscort(user, escortId){
+
+       var vim = this
+
+      axios
+        .delete(this.baseUrl + '/escorts/' + escortId)
+        .then(response => {
+            //Sends escort and user information to create the relation
+            UIkit.modal.alert('¡Se eliminó un usuario!').then(function () {
+              if(vim.girls.length>1){
+              vim.girls.splice(vim.girls.indexOf(user), 1);
+            }else{
+              vim.girls= []
+            }
+            });
+
+        })
+        .catch(error => {
+          // Handle error.
+          console.log('An error occurred:', error);
+          this.isuploading = false
+        });
+    },
     async register(data) {
 
       try {
@@ -172,7 +234,7 @@ export default {
     createEscort(user){
       axios
         .post(this.baseUrl + '/escorts', {
-            name: user.name
+            name: this.fullname
         })
         .then(response => {
             //Sends escort and user information to create the relation
@@ -206,6 +268,13 @@ export default {
           this.username = ""
           this.email = ""
           this.password = ""
+
+          if(this.girls.length == 0){
+            this.girls.push(response.data)
+          }
+          else{
+            this.girls.unshift(response.data)
+          }
 
             UIkit.modal(this.$refs.registerescortmodal).hide()
 

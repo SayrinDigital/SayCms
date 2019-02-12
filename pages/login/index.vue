@@ -95,7 +95,6 @@ export default {
         })
         .then(response => {
           this.$axios.setToken(this.$auth.getToken(this.$auth.strategy.name))
-           console.log(this.$auth.getToken(this.$auth.strategy.name))
                   this.$router.push({
                     path: '/login'
                   })
