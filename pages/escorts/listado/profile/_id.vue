@@ -4,8 +4,31 @@
     <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
       <div class="uk-navbar-left">
         <div class="uk-navbar-item">
-          <div v-if="girl.profilephoto" class="uk-border-rounded uk-background-cover photo-container" uk-img :data-src="baseUrl + girl.profilephoto.url">
+          <div v-if="girl.profilephoto" class="uk-inline-clip uk-transition-toggle uk-border-rounded uk-background-cover photo-container" uk-img :data-src="baseUrl + girl.profilephoto.url">
+            <div class="say uk-transition-slide-bottom uk-position-bottom uk-light">
+              <div>
+                <div class="js-upload" uk-form-custom>
+                    <input type="file" @change="onProfilePhotoFileChange">
+
+                    <button class="uk-button uk-button-default" type="button" tabindex="-1">Subir</button>
+                </div>
+              </div>
+            </div>
           </div>
+          <div v-else class="uk-inline-clip uk-transition-toggle photo-container uk-border-rounded">
+            <div class="say uk-transition-slide-bottom uk-position-bottom uk-light">
+              <div>
+                <div class="js-upload" uk-form-custom>
+                    <input type="file" @change="onProfilePhotoFileChange">
+
+                    <button class="uk-button uk-button-default" type="button" tabindex="-1">Subir</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Upload file -->
+
+          <!-- End Upload file -->
         </div>
         <div class="uk-navbar-item uk-padding-remove">
           <div>
@@ -180,9 +203,12 @@
               <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">Categoría</label>
                 <div class="uk-form-controls">
-                  <select v-if="girl.category" v-model="girl.category.id" class="uk-select light" >
-                     <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
-                   </select>
+                   <select v-if="girl.category" v-model="girl.category.id" class="uk-select light" >
+                       <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                    </select>
+                    <select v-else  v-model="placeholderCategory" class="uk-select light" >
+                        <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                     </select>
                 </div>
               </div>
             </div>
@@ -195,6 +221,8 @@
                      <option v-for="characteristic in characteristics" :value="characteristic.id">{{ characteristic.name }}</option>
                    </select>
 
+
+
                 </div>
               </div>
             </div>
@@ -202,7 +230,7 @@
               <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">Categoría Peso</label>
                 <div class="uk-form-controls">
-                  <select v-if="girl.weightscort" v-model="girl.weightescort.id" class="uk-select light" >
+                  <select v-if="girl.weightescort" v-model="girl.weightescort.id" class="uk-select light" >
                      <option v-for="weight in weightCategories" :value="weight.id">{{ weight.name }}</option>
                    </select>
                    <select v-else  v-model="placeholderWeight" class="uk-select light" >
@@ -290,12 +318,15 @@ export default {
       weightCategories: [],
       result: null,
       es: es,
-      placeholderWeight: null
+      placeholderWeight: null,
+      placeholderCategory: null,
+      profilephotofile: null
     }
   },
   beforeMount() {
     this.id = this.$route.params.id
     this.baseUrl = this.$axios.defaults.baseURL
+      this.token = this.$auth.getToken(this.$auth.strategy.name)
   },
   mounted() {
     this.loadGirl()
@@ -305,6 +336,36 @@ export default {
   },
 
   methods: {
+    onProfilePhotoFileChange(e){
+       this.profilephotofile = e.target.files[0]
+       this.uploadProfilePhoto()
+    },
+    uploadProfilePhoto(){
+      let headerData = new FormData()
+      headerData.append('files', this.profilephotofile)
+      headerData.append('refId', this.id)
+      headerData.append('ref', 'escort')
+      headerData.append('field', 'profilephoto')
+
+      UIkit.modal.dialog('<p class="uk-modal-body">Se está subiendo su foto de perfil. Porfavor espere...</p>');
+
+      axios
+        .post(this.baseUrl + '/upload',
+         headerData,
+         {
+         headers: {
+             'Content-Type': 'multipart/form-data',
+             Authorization: this.token
+         }
+       })
+        .then(response => {
+          this.$router.go()
+        })
+        .catch(error => {
+          // Handle error.
+          console.log('An error occurred:', error);
+        });
+    },
     loadGirl() {
       axios
         .get(this.baseUrl + '/escorts/' + this.id)
@@ -360,6 +421,9 @@ export default {
           console.log('An error occurred:', error);
         });
     },
+    changeProfilePhoto(girl){
+
+    },
     updateEscort(){
 
       const updatedGirl = this.girl
@@ -369,14 +433,20 @@ export default {
       var startpublishdate = moment(updatedGirl.startpublishing).format('YYYY-MM-DD HH:mm:ss');
       var endpublishdate = moment(updatedGirl.endpublishing).format('YYYY-MM-DD HH:mm:ss');
       var weightcategory = null
-
-      console.log(this.placeholderWeight)
+      var maincategory = null
 
       if(!updatedGirl.weightescort){
         weightcategory = this.placeholderWeight
       }else{
-        weightcategory = updatedGirl.weightscort.id
+        weightcategory = updatedGirl.weightescort.id
       }
+
+      if(!updatedGirl.category){
+        maincategory = this.placeholderCategory
+      }else{
+        maincategory = updatedGirl.category.id
+      }
+
 
       //console.log(moment(birthdate, 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
@@ -390,19 +460,15 @@ export default {
            phone: updatedGirl.phone,
            datework: updatedGirl.datework,
            birthdate: bdate,
-           category: updatedGirl.category,
+           category: maincategory,
            startpublishing: startpublishdate,
            endpublishing: endpublishdate,
-           weightscort: weightcategory
+           weightescort: weightcategory,
+           characteristics: this.selectedCharacteristics
 
         })
         .then(response => {
-          // Handle success.
-          //console.log('Well done, here is the list of posts: ', response.data);
-            //console.log(updatedGirl)
-
-                  console.log(weightcategory)
-
+              console.log(maincategory)
             UIkit.modal.alert('¡Se actualizó la información!').then(function () {
 
             });
@@ -424,5 +490,6 @@ export default {
 .photo-container {
   width: 100px;
   height: 100px;
+  background-color: #d1d1d1;
 }
 </style>
