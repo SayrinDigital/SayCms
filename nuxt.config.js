@@ -82,6 +82,7 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    transpile: ['vuejs-datepicker'],
     extend(config, ctx) {
 
     }

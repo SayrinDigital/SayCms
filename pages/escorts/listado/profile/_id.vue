@@ -21,6 +21,7 @@
       </div>
     </nav>
 
+
     <hr class="uk-hr">
 
     <div class="uk-section uk-section-small">
@@ -86,10 +87,11 @@
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-select">Cumpleaños</label>
                   <div class="uk-form-controls">
-                   <input class="uk-input light" v-model="birthdateConverted"   type="datetime" placeholder="">
+                   <datepicker :language="es" v-model="girl.birthdate"></datepicker>
                   </div>
                 </div>
               </div>
+
               <!--<div class="uk-width-1-2@s">
                 <div class="uk-margin">
                   <label class="uk-form-label" for="form-stacked-text">Horario</label>
@@ -178,7 +180,7 @@
               <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">Categoría</label>
                 <div class="uk-form-controls">
-                  <select v-if="girl.category" v-model="girl.category.id" class="uk-select light" id="form-stacked-select">
+                  <select v-if="girl.category" v-model="girl.category.id" class="uk-select light" >
                      <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
                    </select>
                 </div>
@@ -189,7 +191,7 @@
                 <label class="uk-form-label" for="form-stacked-select">Características</label>
                 <div class="uk-form-controls">
 
-                  <select multiple="true" v-model="selectedCharacteristics" class="uk-select light" id="form-stacked-select">
+                  <select multiple="true" v-model="selectedCharacteristics" class="uk-select light" >
                      <option v-for="characteristic in characteristics" :value="characteristic.id">{{ characteristic.name }}</option>
                    </select>
 
@@ -200,9 +202,12 @@
               <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-select">Categoría Peso</label>
                 <div class="uk-form-controls">
-                  <select v-if="girl.weightscort" v-model="girl.weightescort.id" class="uk-select light" id="form-stacked-select">
+                  <select v-if="girl.weightscort" v-model="girl.weightescort.id" class="uk-select light" >
                      <option v-for="weight in weightCategories" :value="weight.id">{{ weight.name }}</option>
                    </select>
+                   <select v-else  v-model="placeholderWeight" class="uk-select light" >
+                      <option v-for="weight in weightCategories" :value="weight.id">{{ weight.name }}</option>
+                    </select>
                 </div>
               </div>
             </div>
@@ -222,7 +227,11 @@
                   <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-select">Inicio Publicación</label>
                     <div class="uk-form-controls">
-                     <input class="uk-input light" v-model="girl.startpublishing"   type="datetime" placeholder="">
+                      <div class="uk-width-1-1">
+                        <div class="uk-margin">
+                          <datepicker :language="es" v-model="girl.startpublishing"></datepicker>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -230,7 +239,11 @@
                   <div class="uk-margin">
                     <label class="uk-form-label" for="form-stacked-select">Fin Publicación</label>
                     <div class="uk-form-controls">
-                     <input class="uk-input light" v-model="girl.endpublishing"   type="datetime" placeholder="">
+                      <div class="uk-width-1-1">
+                        <div class="uk-margin">
+                          <datepicker :language="es" v-model="girl.endpublishing"></datepicker>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -250,6 +263,8 @@
 <script>
 import axios from 'axios'
 import moment from 'moment'
+import Datepicker from 'vuejs-datepicker';
+import {en, es} from 'vuejs-datepicker/dist/locale'
 let UIkit;
 
 if (process.browser) {
@@ -258,7 +273,9 @@ if (process.browser) {
 
 export default {
 
-
+  components: {
+    Datepicker
+  },
   layout: 'panel',
   data() {
     return {
@@ -271,13 +288,10 @@ export default {
       selectedCharacteristics: [],
       selectedWeight: null,
       weightCategories: [],
-      result: null
+      result: null,
+      es: es,
+      placeholderWeight: null
     }
-  },
-  computed: {
-     birthdateConverted: function(){
-       return moment(this.girl.birthdate).format('YYYY-MM-DD HH:mm:ss');
-     }
   },
   beforeMount() {
     this.id = this.$route.params.id
@@ -289,6 +303,7 @@ export default {
     this.loadCharacteristics()
     this.loadWeights()
   },
+
   methods: {
     loadGirl() {
       axios
@@ -350,7 +365,19 @@ export default {
       const updatedGirl = this.girl
       const birthdate = new Date(this.girl.birthdate).toISOString()
 
-      var date = moment(birthdate).format('YYYY-MM-DD HH:mm:ss');
+      var bdate = moment(updatedGirl.birthdate).format('YYYY-MM-DD HH:mm:ss');
+      var startpublishdate = moment(updatedGirl.startpublishing).format('YYYY-MM-DD HH:mm:ss');
+      var endpublishdate = moment(updatedGirl.endpublishing).format('YYYY-MM-DD HH:mm:ss');
+      var weightcategory = null
+
+      console.log(this.placeholderWeight)
+
+      if(!updatedGirl.weightescort){
+        weightcategory = this.placeholderWeight
+      }else{
+        weightcategory = updatedGirl.weightscort.id
+      }
+
       //console.log(moment(birthdate, 'YYYY-MM-DD').format('DD/MM/YYYY'))
 
       axios
@@ -362,16 +389,24 @@ export default {
            price: updatedGirl.price,
            phone: updatedGirl.phone,
            datework: updatedGirl.datework,
-           birthdate: date
+           birthdate: bdate,
+           category: updatedGirl.category,
+           startpublishing: startpublishdate,
+           endpublishing: endpublishdate,
+           weightscort: weightcategory
 
         })
         .then(response => {
           // Handle success.
           //console.log('Well done, here is the list of posts: ', response.data);
             //console.log(updatedGirl)
+
+                  console.log(weightcategory)
+
             UIkit.modal.alert('¡Se actualizó la información!').then(function () {
 
             });
+
         })
         .catch(error => {
           // Handle error.

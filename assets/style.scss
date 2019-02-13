@@ -405,7 +405,20 @@ span.theme-a{
   padding: 50%;
 }
 
-
+.vdp-datepicker{
+  input{
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    font-family: $t-font;
+      border: 1px solid $gray-accent;
+      height: 40px;
+      padding: 0 10px;
+      font-weight: 300;
+      color: #666;
+      width: 100%;
+  }
+}
 
 @media only screen and (max-width: 1200px) {
   .left-panel {

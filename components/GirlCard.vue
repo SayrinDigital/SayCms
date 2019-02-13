@@ -1,6 +1,6 @@
 <template>
   <div>
-        <nuxt-link tag="div" :to="{name: 'escorts-categorias-categoria-profile-id', params: { id: girl.id } }" class="uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded uk-overflow-hidden cursor-pointer">
+        <nuxt-link tag="div" :to="{name: 'escorts-listado-profile-id', params: { id: girl.id } }" class="uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded uk-overflow-hidden cursor-pointer">
             <div class="uk-card-media-top">
                 <img class="uk-width-1-1" v-if="girl.profilephoto" :src="baseUrl + girl.profilephoto.url" alt="">
             </div>
