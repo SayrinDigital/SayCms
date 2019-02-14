@@ -2,7 +2,7 @@
 <div>
   <div class="uk-grid-collapse " uk-grid>
 
-    <div class=" uk-background-default uk-overflow-auto uk-visible@l left-panel">
+    <div class=" uk-background-default uk-visible@l left-panel">
       <div uk-sticky>
         <div class="uk-section uk-section-small">
           <div class="nav  uk-container ">
@@ -69,20 +69,20 @@
       </div>
     </div>
 
-    <div class="uk-width-expand uk-overflow-hidden">
+    <div class="uk-width-expand">
       <div>
-        <nav class="uk-navbar uk-navbar-container uk-margin uk-hidden@l">
+        <!--<nav class="uk-navbar uk-navbar-container uk-margin uk-hidden@l">
           <div class="uk-navbar-left">
             <a class="uk-navbar-toggle" uk-navbar-toggle-icon uk-toggle="target: #offcanvas-nav"></a>
           </div>
-        </nav>
+        </nav>-->
         <nuxt/>
       </div>
 
     </div>
   </div>
 
-  <div id="offcanvas-nav" uk-offcanvas="mode: push; overlay: true">
+  <!-- <div id="offcanvas-nav" uk-offcanvas="mode: push; overlay: true">
     <div class="uk-offcanvas-bar">
 
       <button class="uk-offcanvas-close" type="button" uk-close></button>
@@ -100,20 +100,17 @@
             </div>
           </div>
           <hr class="uk-hr">
-          <!--<button class="uk-button theme-a uk-align-center"><span class="uk-margin-small-right" uk-icon="icon: mail"></span> New Message</button>-->
           <div class="nav">
             <ul class="uk-nav uk-nav-default">
               <li>
                 <nuxt-link class="" tag="a" to="/panel"><span class="uk-margin-small-right" uk-icon="icon: home"></span> Inicio</nuxt-link>
               </li>
-              <!--<li class="uk-nav-header">Header</li>-->
               <li>
                 <nuxt-link class="" tag="a" to="/panel/blog"><span class="uk-margin-small-right" uk-icon="icon: pencil"></span> Blog</nuxt-link>
               </li>
               <li>
                 <nuxt-link class="" tag="a" to="/"><span class="uk-margin-small-right" uk-icon="icon: database"></span> Clientes</nuxt-link>
               </li>
-              <!--<li class="uk-nav-divider"></li>-->
               <li>
                 <nuxt-link class="" tag="a" to="/panel/archivos"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span> Archivos</nuxt-link>
               </li>
@@ -128,7 +125,7 @@
 
       </div>
     </div>
-  </div>
+  </div> -->
 
 </div>
 </template>

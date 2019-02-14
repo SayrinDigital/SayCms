@@ -1,5 +1,7 @@
 <template>
 
-<nuxt/>
+<div class="uk-overflow-hidden">
+  <nuxt/>
+</div>
 
 </template>

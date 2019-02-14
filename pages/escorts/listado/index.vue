@@ -25,8 +25,8 @@
       <div class="uk-section uk-section small">
 
         <div class="uk-child-width-1-5@l uk-child-width-1-3@m uk-child-width-1-1 uk-grid-match uk-grid-small" uk-grid uk-scrollspy="cls: uk-animation-slide-bottom-medium; target: > div > div; delay: 200; repeat: true">
-          <div v-for="girl in girls" :key="girl.id">
-            <div v-if="girl.escort"  class="uk-inline-clip uk-transition-toggle uk-card-body uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded">
+          <div v-for="girl in girls" v-if="girl.escort" :key="girl.id">
+            <div   class="uk-inline-clip uk-transition-toggle uk-card-body uk-card uk-background-default uk-box-shadow-hover-large uk-border-rounded">
 
               <div>
                 <h3>{{ girl.fullname }}</h3>
@@ -145,9 +145,7 @@ export default {
     this.token = this.$auth.getToken(this.$auth.strategy.name)
   },
   mounted() {
-    this.loadEscorts()
     this.loadUsers()
-    //this.loadRoles()
 
   },
   methods: {
@@ -293,13 +291,15 @@ export default {
         Authorization: this.token
       },
       params: {
-        role: 4
+        role: 4,
+        _sort: 'id:DESC'
       }
     })
     .then(response => {
       // Handle success.
       //console.log('Well done, here is the list of posts: ', response.data);
       this.girls = response.data
+      console.log(this.girls)
     })
     .catch(error => {
       // Handle error.
@@ -307,43 +307,6 @@ export default {
       console.log('An error occurred:', error);
     });
   },
-  loadRoles(){
-    axios
-    .get(this.baseUrl + '/roles',{
-      headers: {
-        Authorization: this.token
-      }
-    })
-    .then(response => {
-      // Handle success.
-      //console.log('Well done, here is the list of posts: ', response.data);
-      //this.roles = response.data
-    })
-    .catch(error => {
-      // Handle error.
-
-      console.log('An error occurred:', error);
-    });
-  },
-  loadEscorts() {
-
-    axios
-      .get(this.baseUrl + '/escorts/', {
-        headers: {
-          Authorization: this.token
-        }
-      })
-      .then(response => {
-        // Handle success.
-        //console.log('Well done, here is the list of posts: ', response.data);
-        this.girls = response.data
-      })
-      .catch(error => {
-        // Handle error.
-
-        console.log('An error occurred:', error);
-      });
-  }
 }
 
 }

@@ -19,6 +19,11 @@ html, body, .say-background-theme-a{
   }
 }
 
+.set-default-font{
+  font-family: $t-font;
+  font-weight: 300;
+}
+
 legend{
   font-family: $h-font;
   font-weight: 300;
@@ -419,6 +424,8 @@ span.theme-a{
       width: 100%;
   }
 }
+
+
 
 @media only screen and (max-width: 1200px) {
   .left-panel {
