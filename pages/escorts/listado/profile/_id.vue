@@ -108,7 +108,7 @@
               </div>
               <div class="uk-width-1-2@s">
                 <div class="uk-margin">
-                  <label class="uk-form-label" for="form-stacked-select">Cumpleaños</label>
+                  <label class="uk-form-label" for="form-stacked-select">Fecha de Nacimiento (Será usado para mostrar la edad)</label>
                   <div class="uk-form-controls">
                     <datepicker :language="es" v-model="girl.birthdate"></datepicker>
                   </div>
