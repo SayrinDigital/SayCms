@@ -30,6 +30,7 @@
             <div v-for="category in categories" :key="category.id">
               <div class="glossary-card  uk-box-shadow-hover-large uk-inline-clip uk-transition-toggle" tabindex="0">
                 <div>
+                  <img class="uk-margin" v-if="category.cover" :src="baseUrl + category.cover.url" alt="">
                   <h4>{{ category.name }}</h4>
                   <p v-if="category.escorts">{{ category.escorts.length }} escorts</p>
                 </div>
@@ -65,6 +66,12 @@
           <div class="uk-form-controls">
             <input class="uk-input uk-form-large" v-model="categoryname" type="text" placeholder="Nombre">
           </div>
+          <div class="uk-margin" uk-margin>
+            <div uk-form-custom="target: true">
+                <input type="file" @change="uploadCover">
+                <input class="uk-input uk-form-width-medium" type="text" placeholder="Subir Cover" disabled>
+            </div>
+          </div>
         </div>
         <div v-if="isuploading" class="uk-margin">
           <div uk-spinner></div>
@@ -82,7 +89,7 @@
 
   <div ref="editcategorymodal" id="edit-category-modal" @submit.stop.prevent="saveEditedCategory()" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
-      <h2 class="uk-modal-title">Agregar Categoría</h2>
+      <h2 class="uk-modal-title">Editar Categoría</h2>
       <p>Edita una categoría.</p>
 
       <form class="uk-form-stacked uk-margin">
@@ -132,7 +139,8 @@ export default {
       categoryname: "",
       editedcategoryname: "",
       currentId: null,
-      token: null
+      token: null,
+      image: ""
     }
   },
   beforeMount() {
@@ -143,6 +151,11 @@ export default {
     this.loadCategories()
   },
   methods: {
+
+    uploadCover(e){
+       this.image = e.target.files[0]
+    },
+
     editCategory: function(category){
             this.editedcategoryname = category.name
             this.currentId = category.id
@@ -204,7 +217,30 @@ export default {
 
           this.isuploading = false
           this.categoryname = ""
-          UIkit.modal(this.$refs.addcategorymodal).hide()
+
+          let headerData = new FormData()
+          headerData.append('files', this.image)
+          headerData.append('refId', response.data.id)
+          headerData.append('ref', 'category')
+          headerData.append('field', 'cover')
+
+          axios
+            .post(this.baseUrl + '/upload',
+              headerData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: this.token
+                }
+              })
+            .then(response => {
+              console.log(response.data)
+               UIkit.modal(this.$refs.addcategorymodal).hide()
+            })
+            .catch(error => {
+              // Handle error.
+              console.log('An error occurred:', error);
+            });
+
         })
         .catch(error => {
           // Handle error.

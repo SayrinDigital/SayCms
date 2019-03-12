@@ -291,7 +291,7 @@ export default {
         Authorization: this.token
       },
       params: {
-        role: 4,
+        
         _sort: 'id:DESC'
       }
     })
